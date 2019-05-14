@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tool Generate Batch</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <script>
+        var ExcelToJSON = function () {
+
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+                    workbook.SheetNames.forEach(function (sheetName) {
+                        // Here is your object
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[
+                            sheetName]);
+                        var json_object = JSON.stringify(XL_row_object);
+                        var parse_json_object = JSON.parse(json_object);
+                        var key_T = Object.keys(parse_json_object[0])[0]; // ten logic cua t_rel
+                        var value_T = parse_json_object[0][key_T]; // ten vay ly t_rel
+                        var key_WK = Object.keys(parse_json_object[0])[3]; // ten logic cua WK
+                        var value_WK = parse_json_object[0][key_WK]; // ten vay ly WK
+
+                        var output_1 = `-- ${key_T}から${key_WK}乳挿入する
+INSERT INTO ${key_T}
+(CO_CD               -- 会社コード
+,EIGYO_CD            -- 営業所コード
+,SHUHAISHIN1_CD      -- 集配信コード（一次店）
+,SHUHAISHIN2_CD      -- 集配信コード（二次店）
+,SHUHAISHIN3_CD      -- 集配信コード（三次店）
+,SHUHAISHIN_SEQ      -- 集配信連番
+,SHUHAISHIN_SEQ_NO   -- 集配信連番内SEQ
+,JYUSHIN_YMD         -- 受信日
+,JYUSHIN_TIME        -- 受信時刻
+,JYUSHIN_USER_CD     -- 受信者CD
+,DENPYO_ERR_FLG      -- 伝票単位ｴﾗｰ有無ﾌﾗｸﾞ
+,GYO_ERR_FLG         -- 行単位ｴﾗｰ有無ﾌﾗｸﾞ
+`;
+
+                        output_2 = `
+,UPD_CNT             -- 更新回数
+,DEL_FLG             -- 削除フラグ
+,INS_DATETIME        -- 登録日時
+,INS_USER_CD         -- 登録者(CD)
+,INS_PG              -- 登録PG
+,UPD_DATETIME        -- 更新日時
+,UPD_USER_CD         -- 更新者(CD)
+,UPD_PG)             -- 更新PG
+SELECT
+ CO_CD                                       AS       CO_CD
+,EIGYO_CD                                    AS       EIGYO_CD
+,NVL(SHUHAISHIN1_CD,' ')                     AS       SHUHAISHIN1_CD
+,NVL(SHUHAISHIN2_CD,' ')                     AS       SHUHAISHIN2_CD
+,NVL(SHUHAISHIN3_CD,' ')                     AS       SHUHAISHIN3_CD
+,SHUHAISHIN_SEQ                              AS       SHUHAISHIN_SEQ
+,WORKSHUHAISHIN_SEQ_NO                       AS       SHUHAISHIN_SEQ_NO
+,NVL(JYUSHIN_YMD,' ')                        AS       JYUSHIN_YMD
+,NVL(JYUSHIN_TIME,' ')                       AS       JYUSHIN_TIME
+,NVL(JYUSHIN_USER_CD,' ')                    AS       JYUSHIN_USER_CD
+,0                                           AS       DENPYO_ERR_FLG
+,0                                           AS       GYO_ERR_FLG
+`
+
+                        output_3 = `
+
+,1
+,E.FN_削除フラグ('有効')
+,SYSTIMESTAMP(3)
+,IN_JYUSHIN_USER_CD
+,C_PGID
+,SYSTIMESTAMP(3)
+,IN_JYUSHIN_USER_CD
+,C_PGID
+FROM ${key_WK}
+WHERE CO_CD = IN_CO_CD
+    AND EIGYO_CD = IN_EIGYO_CD
+    AND SHUHAISHIN_SEQ = IN_SHUHAISHIN_SEQ
+ORDER BY WORKSHUHAISHIN_SEQ_NO;
+`
+                        for (var x in parse_json_object) {
+                            if (x > 10) {
+                                len = Object.keys(parse_json_object[x]).length;
+                                // console.log(len);
+                                if (len > 3) {
+                                    // out put 1
+                                    let key_1 = Object.keys(parse_json_object[x])[
+                                    1]; // ten logic cua t_rel
+                                    let value_T = parse_json_object[x][key_1];
+                                    let key_2 = Object.keys(parse_json_object[x])[
+                                    0]; // ten logic cua t_rel
+                                    let value_comment = parse_json_object[x][key_2];
+                                    let space1 = "                    ".slice(value_T.length);
+                                    output_1 += "," + value_T + space1 + "-- " + value_comment +
+                                        "\r";
+
+                                    // out put 2
+                                    if (len > 5) {
+                                        var key_3 = Object.keys(parse_json_object[x])[
+                                        5]; // ten logic cua t_rel
+                                        var value_WK = parse_json_object[x][key_3];
+                                    } else {
+                                        var key_3 = Object.keys(parse_json_object[x])[
+                                        4]; // ten logic cua t_rel
+                                        var value_WK = parse_json_object[x][key_3];
+                                    }
+                                    let columnSelect = `,NVL(${value_WK}),' ')`
+                                    let key_4 = Object.keys(parse_json_object[x])[
+                                    1]; // ten logic cua t_rel
+                                    let value_T2 = parse_json_object[x][key_4];
+                                    let space2 = "                                             "
+                                        .slice(columnSelect.length);
+                                    output_2 += columnSelect + space2 + "AS       " + value_T2 +
+                                        "\r";
+                                }
+                            }
+                        }
+                        output = output_1 + output_2 + output_3;
+                        jQuery('#xlx_json').val(output);
+                    })
+                };
+
+                reader.onerror = function (ex) {
+                    console.log(ex);
+                };
+
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        function handleFileSelect(evt) {
+
+            var files = evt.target.files; // FileList object
+            var xl2json = new ExcelToJSON();
+            xl2json.parseExcel(files[0]);
+        }
+    </script>
+</head>
+
+<body>
+    <form enctype="multipart/form-data">
+        <input id="upload" type=file name="files[]">
+    </form>
+    <textarea class="form-control" rows=35 cols=120 id="xlx_json"></textarea>
+    <script>
+        document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+    </script>
+</body>
+
+</html>
