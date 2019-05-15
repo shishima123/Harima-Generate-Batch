@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Tool Generate Batch</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <script>
+$( document ).ready(function() {
+        $("#btnGen").click(function () {
+            var files = $('#uploadMapping').files; // FileList object
+            // var xl2json = new ExcelToJSON();
+            // xl2json.parseExcel(files[0]);
+            this.parseExcel = function (file) {
+                var reader = new FileReader();
+
+        // reader.onload = function (e) {
+          var data = e.target.result;
+                var workbook = XLSX.read(data, {
+                    type: "binary"
+                });
+                var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                // Here is your object
+                var sheeetMapping = XLSX.utils.sheet_to_row_object_array(
+                    workbook.Sheets[workbook.SheetNames[0]]
+                );
+
+                var mappingToJson = JSON.stringify(sheeetMapping);
+                var parse_json_mapping = JSON.parse(mappingToJson);
+                var json_table_WK = TableToJson(workbook);
+                var json_table_T_REL = TableToJson(workbook);
+
+                var namePhysicTableT_REL = Object.keys(parse_json_mapping[0])[0]; // ten vat ly cua bang t_rel
+                var namePhysicTableWK = Object.keys(parse_json_mapping[0])[3]; // ten vat ly cua bang WK
+
+                $("#xlx_json").val(parse_json_mapping);
+            // };
+
+            reader.onerror = function (ex) {
+                console.log(ex);
+            };
+
+            reader.readAsBinaryString(file);
+        };
+    });
+});
+
+        function handleFileSelect(evt) {
+
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form enctype="multipart/form-data" class="my-3">
+                    <input id="uploadMapping" type="file" name="files1[]" />
+                </form>
+
+                <form enctype="multipart/form-data" class="my-3">
+                    <input id="uploadT_REL" type="file" name="files2[]" />
+                </form>
+
+                <form enctype="multipart/form-data" class="my-3">
+                    <input id="uploadWK" type="file" name="files3[]" />
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <textarea class="form-control" rows="35" cols="120" id="xlx_json"></textarea>
+            </div>
+            <div class="col-4">
+                <div>
+                    Tên Package : <input id="namePKG" type="text">
+                </div>
+                <div>
+                    Tên Package(Japan): <input id="nameJapanOfPkg" type="text">
+                </div>
+                <button class="btn btn-primary" id="btnGen">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // document.getElementById("uploadMapping").addEventListener("change", handleFileSelect, false);
+        // document.getElementById("uploadT_REL").addEventListener("change", handleFileSelect, false);
+        // document.getElementById("uploadWK").addEventListener("change", handleFileSelect, false);
+    </script>
+    <script src="./coretest.js"></script>
+</body>
+
+</html>

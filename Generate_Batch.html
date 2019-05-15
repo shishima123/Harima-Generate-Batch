@@ -23,28 +23,49 @@
           });
           var worksheet = workbook.Sheets[workbook.SheetNames[0]];
           // Here is your object
-          var sheeetMapping = XLSX.utils.sheet_to_row_object_array(
+          var sheetMapping = XLSX.utils.sheet_to_row_object_array(
             workbook.Sheets[workbook.SheetNames[0]]
           );
 
           var namePKG = $('#namePKG').val();
-          console.log(namePKG)
           var nameJapanOfPkg = $('#nameJapanOfPkg').val();
 
-          var mappingToJson = JSON.stringify(sheeetMapping);
+          var mappingToJson = JSON.stringify(sheetMapping);
           var parse_json_mapping = JSON.parse(mappingToJson);
           var json_table_WK = TableWKToJson(workbook);
           var json_table_T_REL = TableT_RELToJson(workbook);
 
           var namePhysicTableT_REL = Object.keys(parse_json_mapping[0])[0]; // ten vat ly cua bang t_rel
           var namePhysicTableWK = Object.keys(parse_json_mapping[0])[3]; // ten vat ly cua bang WK
+          console.log(parse_json_mapping)
 
-          var startToDeclare = Start_To_Declare(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK);
-          var declareToSubStrb = Declare_To_SubStrb(json_table_WK);
-          var subStrbToInsertWK = SubStrb_To_Insert_WK(json_table_WK);
-          var insertWKToInsertTREL = Insert_WK_To_Insert_T_REL(json_table_WK, namePhysicTableWK);
-          var insertTRELToEnd = Insert_T_REL_To_End(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
-          var output = startToDeclare + declareToSubStrb + subStrbToInsertWK + insertWKToInsertTREL + insertTRELToEnd;
+          // Chon loai Batch se duoc gen
+          var type = $( "#typeBatch option:selected" ).val();
+
+          switch(type) {
+            case "HD_DT_TR":
+              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK);
+              var compareToDeclare = Compare_To_Declare_HD_DT_TR();
+              var declareToSubStrb = Declare_To_SubStrb_HD_DT_TR(json_table_WK);
+              var subStrbToInsertWK = SubStrb_To_Insert_WK_HD_DT_TR(json_table_WK);
+              var insertWKToInsertTREL = Insert_WK_To_Insert_T_REL_HD_DT_TR(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+              var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbToInsertWK + insertWKToInsertTREL + insertT_RELToEnd;
+
+              break;
+            case "HD_DT":
+              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK);
+              var compareToSubStrb = Compare_To_SubStrb_HD_DT();
+              var subStrbToInsertWK = SubStrb_To_Insert_WK_HD_DT(json_table_WK);
+              var insertWKToInsertT_REL = Insert_WK_To_Insert_T_REL_HD_DT(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+              var output = startToCompare + compareToSubStrb + subStrbToInsertWK + insertWKToInsertT_REL + insertT_RELToEnd;
+
+              break;
+            default:
+            console.log('a')
+            }
+          
           $("#xlx_json").val(output);
         };
 
@@ -84,12 +105,22 @@
         <div>
           Tên Package(Japan): <input id="nameJapanOfPkg" type="text">
         </div>
+        <label class="mt-5">Điều Kiện Where Đặc Biệt</label>
+        <textarea class="form-control" rows="2" cols="8" id="whereExtend"></textarea>
+        <div class="form-group mt-5">
+          <label for="typeBatch">Type Batch</label>
+          <select class="form-control" id="typeBatch">
+            <option value="HD_DT_TR">HD_DT_TR</option>
+            <option value="HD_DT">HD_DT</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
       </div>
     </div>
 
   </div>
-
-
   </div>
 
   <script>
@@ -99,6 +130,8 @@
   </script>
   <script src="./core.js"></script>
   <script src="./HD_DT_TR.js"></script>
+  <script src="./HD_DT.js"></script>
+  <script src="./common.js"></script>
 </body>
 
 </html>
