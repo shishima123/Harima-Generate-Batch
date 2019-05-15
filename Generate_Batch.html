@@ -40,11 +40,11 @@
           console.log(parse_json_mapping)
 
           // Chon loai Batch se duoc gen
-          var type = $( "#typeBatch option:selected" ).val();
+          var type = $("#typeBatch option:selected").val();
 
-          switch(type) {
+          switch (type) {
             case "HD_DT_TR":
-              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK);
+              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var compareToDeclare = Compare_To_Declare_HD_DT_TR();
               var declareToSubStrb = Declare_To_SubStrb_HD_DT_TR(json_table_WK);
               var subStrbToInsertWK = SubStrb_To_Insert_WK_HD_DT_TR(json_table_WK);
@@ -54,7 +54,7 @@
 
               break;
             case "HD_DT":
-              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK);
+              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var compareToSubStrb = Compare_To_SubStrb_HD_DT();
               var subStrbToInsertWK = SubStrb_To_Insert_WK_HD_DT(json_table_WK);
               var insertWKToInsertT_REL = Insert_WK_To_Insert_T_REL_HD_DT(json_table_WK, namePhysicTableWK);
@@ -63,9 +63,9 @@
 
               break;
             default:
-            console.log('a')
-            }
-          
+              alert("Chưa chọn loại batch cần tạo");
+          }
+
           $("#xlx_json").val(output);
         };
 
@@ -85,31 +85,28 @@
   </script>
 </head>
 
-<body>
-  <div class="container">
+<body style="background-color: #EEEEEE;">
+  <div class="container mt-3">
     <div class="row">
-      <div class="col-12">
-        <form enctype="multipart/form-data" class="my-3">
-          <input id="upload" type="file" name="files[]" />
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-8">
-        <textarea class="form-control" rows="35" cols="120" id="xlx_json"></textarea>
-      </div>
       <div class="col-4">
-        <div>
-          Tên Package : <input id="namePKG" type="text">
+        <form>
+          <div class="form-group">
+            <label for="namePKG" class="font-weight-bold">Tên Package</label>
+            <input type="text" class="form-control" id="namePKG">
+          </div>
+          <div class="form-group">
+            <label for="nameJapanOfPkg" class="font-weight-bold">Tên Package(Japan)</label>
+            <input type="text" class="form-control" id="nameJapanOfPkg">
+          </div>
+        </form>
+        <div class="form-group">
+          <label class="font-weight-bold">Điều Kiện Where Đặc Biệt</label>
+          <textarea class="form-control" rows="2" cols="8" id="whereExtend"></textarea>
         </div>
-        <div>
-          Tên Package(Japan): <input id="nameJapanOfPkg" type="text">
-        </div>
-        <label class="mt-5">Điều Kiện Where Đặc Biệt</label>
-        <textarea class="form-control" rows="2" cols="8" id="whereExtend"></textarea>
-        <div class="form-group mt-5">
-          <label for="typeBatch">Type Batch</label>
+        <div class="form-group">
+          <label for="typeBatch" class="font-weight-bold">Type Batch</label>
           <select class="form-control" id="typeBatch">
+            <option>Type Batch</option>
             <option value="HD_DT_TR">HD_DT_TR</option>
             <option value="HD_DT">HD_DT</option>
             <option>3</option>
@@ -117,10 +114,16 @@
             <option>5</option>
           </select>
         </div>
+        <div class="form-group">
+          <form enctype="multipart/form-data" class="mt-5 text-center">
+            <input id="upload" type="file" style="color:transparent; width:80px;" />
+          </form>
+        </div>
+      </div>
+      <div class=" col-8">
+        <textarea class="form-control" rows="25" cols="120" id="xlx_json"></textarea>
       </div>
     </div>
-
-  </div>
   </div>
 
   <script>
