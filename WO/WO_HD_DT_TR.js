@@ -1,4 +1,4 @@
-function Compare_To_Declare_HD_DT_TR() {
+function Compare_To_Declare_WO_HD_DT_TR() {
   let compare = `
         -- レコード件数をカウントする。
       OUT_DATA_KENSU := OUT_DATA_KENSU + 1;
@@ -35,7 +35,7 @@ function Compare_To_Declare_HD_DT_TR() {
 } 
 
 
-function Declare_To_SubStrb_HD_DT_TR(json_table_WK) {
+function Declare_To_SubStrb_WO_HD_DT_TR(json_table_WK) {
   let declare = `
 
     -- タグが”DT”のレコードのタイプを宣言する
@@ -94,7 +94,7 @@ function Declare_To_SubStrb_HD_DT_TR(json_table_WK) {
   return output;
 }
 
-function SubStrb_To_Insert_WK_HD_DT_TR(json_table_WK) {
+function SubStrb_To_Insert_WK_WO_HD_DT_TR(json_table_WK) {
   let wkTagHD = `
         IF WK_TAG = 'HD' THEN
           REC.H_TAG                    :=           WK_TAG;                          -- ヘッダー_タグ
@@ -118,9 +118,9 @@ let wkTagTR = `
           REC.T_TAG                    :=           WK_TAG;                          -- トレーラ_タグ
 `
 
-  var startOfHD = 3;
-  var startOfDT = 3;
-  var startOfTR = 3;
+  var posOfHD = 3;
+  var posOfDT = 3;
+  var posOfTR = 3;
   for (var i in json_table_WK) {
     var firstChar = json_table_WK[i].PHY_NM.slice(0, 1);
 
@@ -130,13 +130,13 @@ let wkTagTR = `
         let spaceAfterPhysicNm = "                         ".slice(phyNm.length);
 
         let digit = json_table_WK[i].DIGIT;
-        let subStrb = `:=           SUBSTRB(WK_DATA_ROW, ${startOfHD}, ${digit});`
+        let subStrb = `:=           SUBSTRB(WK_DATA_ROW, ${posOfHD}, ${digit});`
         let logicNm = json_table_WK[i].LOG_NM;
-        let lenSubStrb = startOfHD.toString().length + digit.toString().length;
+        let lenSubStrb = posOfHD.toString().length + digit.toString().length;
         let spaceAfterSubStrb = "        -- ".slice(lenSubStrb);
 
         wkTagHD += "          REC." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
-        startOfHD = startOfHD + digit;
+        posOfHD = posOfHD + Number(digit);
       }
     }
 
@@ -146,13 +146,13 @@ let wkTagTR = `
         let spaceAfterPhysicNm = "                      ".slice(phyNm.length);
 
         let digit = json_table_WK[i].DIGIT;
-        let subStrb = `:=           SUBSTRB(WK_DATA_ROW, ${startOfDT}, ${digit});`
+        let subStrb = `:=           SUBSTRB(WK_DATA_ROW, ${posOfDT}, ${digit});`
         let logicNm = json_table_WK[i].LOG_NM;
-        let lenSubStrb = startOfDT.toString().length + digit.toString().length;
+        let lenSubStrb = posOfDT.toString().length + digit.toString().length;
         let spaceAfterSubStrb = "        -- ".slice(lenSubStrb);
 
         wkTagDT += "          TYPE_D." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
-        startOfDT = startOfDT + digit;
+        posOfDT = posOfDT + Number(digit);
       }
     }
 
@@ -162,13 +162,13 @@ let wkTagTR = `
         let spaceAfterPhysicNm = "                         ".slice(phyNm.length);
 
         let digit = json_table_WK[i].DIGIT;
-        let subStrb = `:=           SUBSTRB(WK_DATA_ROW, ${startOfTR}, ${digit});`
+        let subStrb = `:=           SUBSTRB(WK_DATA_ROW, ${posOfTR}, ${digit});`
         let logicNm = json_table_WK[i].LOG_NM;
-        let lenSubStrb = startOfTR.toString().length + digit.toString().length;
+        let lenSubStrb = posOfTR.toString().length + digit.toString().length;
         let spaceAfterSubStrb = "        -- ".slice(lenSubStrb);
 
         wkTagTR += "          REC." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
-        startOfTR = startOfTR + digit;
+        posOfTR = posOfTR + Number(digit);
       }
     }
   }
@@ -176,7 +176,7 @@ let wkTagTR = `
   return output
 }
 
-function Insert_WK_To_Insert_T_REL_HD_DT_TR(json_table_WK, namePhysicTableWK) {
+function Insert_WK_To_Insert_T_REL_WO_HD_DT_TR(json_table_WK, namePhysicTableWK) {
   let startInsertWK = `
 
           FOR i IN TABLE_D.FIRST .. TABLE_D.LAST

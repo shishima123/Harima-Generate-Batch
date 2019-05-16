@@ -1,4 +1,4 @@
-function Start_To_Compare_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK) {
+function Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK) {
   var dateObj = new Date();
   var month = dateObj.getUTCMonth() + 1; //months from 1-12
   var day = dateObj.getUTCDate();
@@ -133,8 +133,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
   return startToCompare;
 }
 
-function Insert_T_REL_To_End_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK,namePKG) {
-  var whereExtend = $("#whereExtend").val();
+function Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK,namePKG) {
+  // Chon loai Batch se duoc gen
+  var type = $("#typeBatch option:selected").val();
+
+  switch (type) {
+  case "WO_HD_DT_TR":
+    var whereExtend = '';
+    break;
+  case "WO_HD_DT":
+    var whereExtend = 'AND H_TAG IS NOT NULL';
+    break;
+  default:
+        var whereExtend = '';
+  }
+
   var outputInsert = `
     -- ${namePhysicTableWK}から${namePhysicTableT_REL}乳挿入する
     INSERT INTO ${namePhysicTableT_REL}

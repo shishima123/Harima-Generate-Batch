@@ -37,33 +37,48 @@
 
           var namePhysicTableT_REL = Object.keys(parse_json_mapping[0])[0]; // ten vat ly cua bang t_rel
           var namePhysicTableWK = Object.keys(parse_json_mapping[0])[3]; // ten vat ly cua bang WK
-          console.log(parse_json_mapping)
+          console.log(json_table_T_REL)
 
           // Chon loai Batch se duoc gen
           var type = $("#typeBatch option:selected").val();
 
           switch (type) {
-            case "HD_DT_TR":
-              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
-              var compareToDeclare = Compare_To_Declare_HD_DT_TR();
-              var declareToSubStrb = Declare_To_SubStrb_HD_DT_TR(json_table_WK);
-              var subStrbToInsertWK = SubStrb_To_Insert_WK_HD_DT_TR(json_table_WK);
-              var insertWKToInsertTREL = Insert_WK_To_Insert_T_REL_HD_DT_TR(json_table_WK, namePhysicTableWK);
-              var insertT_RELToEnd = Insert_T_REL_To_End_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
-              var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbToInsertWK + insertWKToInsertTREL + insertT_RELToEnd;
+            case "WO_HD_DT_TR":
+              var startToCompare = Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var compareToDeclare = Compare_To_Declare_WO_HD_DT_TR();
+              var declareToSubStrb = Declare_To_SubStrb_WO_HD_DT_TR(json_table_WK);
+              var subStrbToInsertWK = SubStrb_To_Insert_WK_WO_HD_DT_TR(json_table_WK);
+              var insertWKToInsertT_REL = Insert_WK_To_Insert_T_REL_WO_HD_DT_TR(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+
+              var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbToInsertWK + insertWKToInsertT_REL + insertT_RELToEnd;
 
               break;
-            case "HD_DT":
-              var startToCompare = Start_To_Compare_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
-              var compareToSubStrb = Compare_To_SubStrb_HD_DT();
-              var subStrbToInsertWK = SubStrb_To_Insert_WK_HD_DT(json_table_WK);
-              var insertWKToInsertT_REL = Insert_WK_To_Insert_T_REL_HD_DT(json_table_WK, namePhysicTableWK);
-              var insertT_RELToEnd = Insert_T_REL_To_End_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+            case "WO_HD_DT":
+              var startToCompare = Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var compareToSubStrb = Compare_To_SubStrb_WO_HD_DT();
+              var subStrbToInsertWK = SubStrb_To_Insert_WK_WO_HD_DT(json_table_WK);
+              var insertWKToInsertT_REL = Insert_WK_To_Insert_T_REL_WO_HD_DT(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+
               var output = startToCompare + compareToSubStrb + subStrbToInsertWK + insertWKToInsertT_REL + insertT_RELToEnd;
 
+            case "BO_L_B_D":
+              var startToCompare = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var compareToDeclare = Compare_To_Declare_BO_L_B_D();
+              var declareToSubStrb = Declare_To_SubStrbL_BO_L_B_D(json_table_WK);
+              var subStrbLToSubStrbBD = SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK);
+              var subStrbBDToInsertT_REL = SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+
+              var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbLToSubStrbBD + subStrbBDToInsertT_REL + insertT_RELToEnd;
               break;
             default:
-              alert("Chưa chọn loại batch cần tạo");
+              if (confirm("Chưa Chọn Loại Batch cần Tạo!")) {
+                location.reload();
+              } else {
+                location.reload();
+              }
           }
 
           $("#xlx_json").val(output);
@@ -88,7 +103,7 @@
 <body style="background-color: #EEEEEE;">
   <div class="container mt-3">
     <div class="row">
-      <div class="col-4">
+      <div class="col-2">
         <form>
           <div class="form-group">
             <label for="namePKG" class="font-weight-bold">Tên Package</label>
@@ -99,28 +114,28 @@
             <input type="text" class="form-control" id="nameJapanOfPkg">
           </div>
         </form>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label class="font-weight-bold">Điều Kiện Where Đặc Biệt</label>
           <textarea class="form-control" rows="2" cols="8" id="whereExtend"></textarea>
-        </div>
+        </div> -->
         <div class="form-group">
           <label for="typeBatch" class="font-weight-bold">Type Batch</label>
           <select class="form-control" id="typeBatch">
             <option>Type Batch</option>
-            <option value="HD_DT_TR">HD_DT_TR</option>
-            <option value="HD_DT">HD_DT</option>
-            <option>3</option>
+            <option value="WO_HD_DT_TR">WO_HD_DT_TR</option>
+            <option value="WO_HD_DT">WO_HD_DT</option>
+            <option value="BO_L_B_D">BO_L_B_D</option>
             <option>4</option>
             <option>5</option>
           </select>
         </div>
         <div class="form-group">
           <form enctype="multipart/form-data" class="mt-5 text-center">
-            <input id="upload" type="file" style="color:transparent; width:80px;" />
+            <input id="upload" type="file" style="color:transparent; width:81px;" />
           </form>
         </div>
       </div>
-      <div class=" col-8">
+      <div class=" col-10">
         <textarea class="form-control" rows="25" cols="120" id="xlx_json"></textarea>
       </div>
     </div>
@@ -132,9 +147,11 @@
       .addEventListener("change", handleFileSelect, false);
   </script>
   <script src="./core.js"></script>
-  <script src="./HD_DT_TR.js"></script>
-  <script src="./HD_DT.js"></script>
-  <script src="./common.js"></script>
+  <script src="./WO/WO_HD_DT_TR.js"></script>
+  <script src="./WO/WO_HD_DT.js"></script>
+  <script src="./WO/WO_Common.js"></script>
+  <script src="./BO/BO_Common.js"></script>
+  <script src="./BO/BO_L_B_D.js"></script>
 </body>
 
 </html>

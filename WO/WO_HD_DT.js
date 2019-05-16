@@ -1,4 +1,4 @@
-function Compare_To_SubStrb_HD_DT() {
+function Compare_To_SubStrb_WO_HD_DT() {
   let compare = `
       IF WK_TAG = 'HD' THEN -- タグ HDのレコードの場合、件数をカウントして戻り値・伝票枚数にセット。
         OUT_DENPYO_KENSU := OUT_DENPYO_KENSU + 1;
@@ -54,7 +54,7 @@ function Compare_To_SubStrb_HD_DT() {
   return compare;
 } 
 
-function SubStrb_To_Insert_WK_HD_DT(json_table_WK) {
+function SubStrb_To_Insert_WK_WO_HD_DT(json_table_WK) {
     let wkTagHD = 
 `         IF WK_TAG = 'HD' THEN
           REC.H_TAG                    :=           WK_TAG;                          -- ヘッダー_タグ
@@ -85,7 +85,7 @@ function SubStrb_To_Insert_WK_HD_DT(json_table_WK) {
         let spaceAfterSubStrb = "        -- ".slice(lenSubStrb);
 
         wkTagHD += "          REC." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
-        startOfHD = startOfHD + digit;
+        startOfHD = startOfHD + Number(digit);
       }
     }
 
@@ -101,7 +101,7 @@ function SubStrb_To_Insert_WK_HD_DT(json_table_WK) {
         let spaceAfterSubStrb = "        -- ".slice(lenSubStrb);
 
         wkTagDT += "          TYPE_D." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
-        startOfDT = startOfDT + digit;
+        startOfDT = startOfDT + Number(digit);
       }
     }
 
@@ -110,7 +110,7 @@ function SubStrb_To_Insert_WK_HD_DT(json_table_WK) {
   return output
 }
 
-function Insert_WK_To_Insert_T_REL_HD_DT(json_table_WK, namePhysicTableWK) {
+function Insert_WK_To_Insert_T_REL_WO_HD_DT(json_table_WK, namePhysicTableWK) {
   let startInsertWK = `
 
           INSERT INTO ${namePhysicTableWK}
