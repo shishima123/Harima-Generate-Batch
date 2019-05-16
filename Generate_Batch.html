@@ -12,6 +12,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
   <script>
+
+    $(document).ready(function () {
+      // Chon loai Batch se duoc gen
+      var type = $("#typeBatch option:selected").val();
+      $('#typeBatch').on('change', function () {
+        type = $("#typeBatch option:selected").val();
+      });
+
+      $('#upload').click(function (e) {
+        if (type == "NO") {
+          e.preventDefault();
+          alert('Chưa Chọn Loại Batch cần Tạo!');
+        }
+      });
+    });
     var ExcelToJSON = function () {
       this.parseExcel = function (file) {
         var reader = new FileReader();
@@ -37,7 +52,7 @@
 
           var namePhysicTableT_REL = Object.keys(parse_json_mapping[0])[0]; // ten vat ly cua bang t_rel
           var namePhysicTableWK = Object.keys(parse_json_mapping[0])[3]; // ten vat ly cua bang WK
-          console.log(json_table_T_REL)
+          // console.log(json_table_T_REL)
 
           // Chon loai Batch se duoc gen
           var type = $("#typeBatch option:selected").val();
@@ -98,6 +113,33 @@
       xl2json.parseExcel(files[0]);
     }
   </script>
+  <style>
+  .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    }
+
+  .inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: black;
+    display: inline-block;
+    cursor: pointer;
+    width: 140px;
+    height: 40px;
+    border-radius: 5px;
+  }
+
+  .inputfile:focus + label,
+  .inputfile + label:hover {
+      background-color: red;
+  }
+  </style>
 </head>
 
 <body style="background-color: #EEEEEE;">
@@ -121,7 +163,7 @@
         <div class="form-group">
           <label for="typeBatch" class="font-weight-bold">Type Batch</label>
           <select class="form-control" id="typeBatch">
-            <option>Type Batch</option>
+            <option value="NO">Type Batch</option>
             <option value="WO_HD_DT_TR">WO_HD_DT_TR</option>
             <option value="WO_HD_DT">WO_HD_DT</option>
             <option value="BO_L_B_D">BO_L_B_D</option>
@@ -131,7 +173,8 @@
         </div>
         <div class="form-group">
           <form enctype="multipart/form-data" class="mt-5 text-center">
-            <input id="upload" type="file" style="color:transparent; width:81px;" />
+            <input id="upload" type="file" class="inputfile" />
+            <label for="upload">Choose a file</label>
           </form>
         </div>
       </div>
