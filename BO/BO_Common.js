@@ -14,15 +14,22 @@ function Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_RE
   var type = $("#typeBatch option:selected").val();
 
   switch (type) {
-  case "BO_L_B_D":
-    var commentFeature = `
-                /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
+    case "BO_L_B_D":
+      var commentFeature = `
+\r                /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
                 * ﾚｺｰﾄﾞ区分不正ﾁｪｯｸ    ：PG毎に異なる
                                     ：レコード（R）区分　L B D  以外はエラー。の場合、ﾚｺｰﾄﾞ区分不正の為、エラー処理を行う。
                 ********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********/`;
-    break;
-  default:
-        var commentFeature = '';
+      break;
+    case "BO_A_B_C_D_E":
+      var commentFeature = `
+\r          /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
+          * ﾚｺｰﾄﾞ区分不正ﾁｪｯｸ    ：PG毎に異なる
+                                ：フォーマットID　A B C D E  以外はエラー。の場合、ﾚｺｰﾄﾞ区分不正の為、エラー処理を行う。
+          ********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********/`;
+      break;
+    default:
+      var commentFeature = '';
   }
 
   var startToCompare =
@@ -107,50 +114,51 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
     OUT_ERR_CD             := '';
     OUT_ERR_MSG            := '';
 
-    --ﾌｧｲﾙﾊﾟｽの取得
+    -- ﾌｧｲﾙﾊﾟｽの取得
     WK_V_PATH := E.OF_CONST('HB_JYUCHU_DIR');
     -- << データ取得 >> ---------------------------------------------
     -- ｵﾝﾗｲﾝ受信ﾌｧｲﾙを開く
     IF UTL_FILE.IS_OPEN(WK_FILE_HANDLE) = FALSE THEN
-        -- ファイルリストオープン
-        WK_FILE_HANDLE := UTL_FILE.FOPEN(WK_V_PATH, IN_FILE_NM, 'R');
-
+      -- ファイルリストオープン
+      WK_FILE_HANDLE := UTL_FILE.FOPEN(WK_V_PATH, IN_FILE_NM, 'R');
     END IF;
-    --■　ｵﾝﾗｲﾝ受信ファイルを順に読込み、ﾚｺｰﾄﾞ区分（ｴﾝﾄﾞﾚｺｰﾄﾞ、ｽﾀｰﾄﾚｺｰﾄﾞ、1ﾚｺｰﾄﾞがすべて空白以外）のﾁｪｯｸを行う　■
+
+    --　ｵﾝﾗｲﾝ受信ファイルを順に読込み、ﾚｺｰﾄﾞ区分（ｴﾝﾄﾞﾚｺｰﾄﾞ、ｽﾀｰﾄﾚｺｰﾄﾞ、1ﾚｺｰﾄﾞがすべて空白以外）のﾁｪｯｸを行う　
     LOOP UTL_FILE.GET_LINE(WK_FILE_HANDLE, WK_V_WRITCHAR);
 
-        --エンドレコードのレコード区分（'END  '）になるまで処理を行う
-        EXIT WHEN SUBSTRB(WK_V_WRITCHAR, 1, 5) = STR_END;
+      -- エンドレコードのレコード区分（'END  '）になるまで処理を行う
+      EXIT WHEN SUBSTRB(WK_V_WRITCHAR, 1, 5) = STR_END;
 
-         --1ﾚｺｰﾄﾞがすべて空白以外のﾁｪｯｸを行う
-        IF TRIM(WK_V_WRITCHAR) IS NOT NULL THEN
+      --1ﾚｺｰﾄﾞがすべて空白以外のﾁｪｯｸを行う
+      IF TRIM(WK_V_WRITCHAR) IS NOT NULL THEN
 
-            --ｽﾀｰﾄﾚｺｰﾄﾞのレコード区分（'START'）以外のﾁｪｯｸを行う
-            IF TRIM(SUBSTRB(WK_V_WRITCHAR, 1, 5)) <> STR_START THEN
-                ${commentFeature}
-                -- レコード区分を変数に代入
-                STR_REC_KBN := TRIM(SUBSTRB(WK_V_WRITCHAR, 1, 1));
+        --ｽﾀｰﾄﾚｺｰﾄﾞのレコード区分（'START'）以外のﾁｪｯｸを行う
+        IF TRIM(SUBSTRB(WK_V_WRITCHAR, 1, 5)) <> STR_START THEN${commentFeature}
 
-                --レコード件数をカウントする。
-                OUT_DATA_KENSU := OUT_DATA_KENSU + 1;
+          -- レコード区分を変数に代入
+          STR_REC_KBN := TRIM(SUBSTRB(WK_V_WRITCHAR, 1, 1));
+          OUT_DATA_KENSU          := OUT_DATA_KENSU + 1; -- タグ Bのレコードの場合、件数をカウントして戻り値・伝票枚数にセット。
 `
   return startToCompare;
 }
 
-function Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK,namePKG) {
+function Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG) {
   // Chon loai Batch se duoc gen
   var type = $("#typeBatch option:selected").val();
 
   switch (type) {
-  case "BO_L_B_D":
-    var whereExtend = 'AND DM_REC_KBN IS NOT NULL';
-    break;
-  default:
-        var whereExtend = '';
+    case "BO_L_B_D":
+      var whereExtend = '\r      AND DM_REC_KBN IS NOT NULL';
+      break;
+    case "BO_A_B_C_D_E":
+      var whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
+      break;
+    default:
+      var whereExtend = '';
   }
 
   var outputInsert = `
-    -- ${namePhysicTableWK}から${namePhysicTableT_REL}乳挿入する
+    -- ${namePhysicTableWK}から{namePhysicTableT_REL}を挿入する
     INSERT INTO ${namePhysicTableT_REL}
       (CO_CD                     -- 会社コード
       ,EIGYO_CD                  -- 営業所コード
@@ -203,11 +211,10 @@ function Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, nam
     FROM WK_E_ORD_YAMADA_STORE
     WHERE CO_CD            = IN_CO_CD
       AND EIGYO_CD         = IN_EIGYO_CD
-      AND SHUHAISHIN_SEQ   = IN_SHUHAISHIN_SEQ
-      ${whereExtend}
+      AND SHUHAISHIN_SEQ   = IN_SHUHAISHIN_SEQ${whereExtend}
     ORDER BY WORKSHUHAISHIN_SEQ_NO;
 
-     --ｵﾝﾗｲﾝ受信ﾌｧｲﾙを閉じる
+    --ｵﾝﾗｲﾝ受信ﾌｧｲﾙを閉じる
     IF UTL_FILE.IS_OPEN(WK_FILE_HANDLE) = TRUE THEN
       UTL_FILE.FCLOSE(WK_FILE_HANDLE);
     END IF;
@@ -248,41 +255,47 @@ END PKG_${namePKG};
     if (len > 3) {
 
       // lay ra cot can insert cua ban T_REL
-      var keyOfNameTableT_REL = Object.keys(parse_json_mapping[x])[1];
-      var NameTableT_REL = parse_json_mapping[x][keyOfNameTableT_REL];  // ten vat ly cua t_rel
+      var keyOfNmPhysicColumnTableT_REL = Object.keys(parse_json_mapping[x])[1];
+      var nmPhysicColumnTableT_REL = parse_json_mapping[x][keyOfNmPhysicColumnTableT_REL];  // ten vat ly cua t_rel
       var keyOfComment = Object.keys(parse_json_mapping[x])[0];
       var Comment = parse_json_mapping[x][keyOfComment];                // ten logic cua t_rel
-      let spaceBeforeComment = "                          ".slice(NameTableT_REL.length);
-      outputInsert += "      ," + NameTableT_REL + spaceBeforeComment + "-- " + Comment + "\r";
+      let spaceBeforeComment = "                          ".slice(nmPhysicColumnTableT_REL.length);
+      outputInsert += "      ," + nmPhysicColumnTableT_REL + spaceBeforeComment + "-- " + Comment + "\r";
 
       // lay ra cot cua bang WK de insert vao bang T_REl
       var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[4]; // ten logic cua T_REL
       var NameTableWK = parse_json_mapping[x][keyOfNameTableWK];
-      
+
       var nullValue;
 
-      if (!json_table_T_REL[NameTableT_REL].NULLABLE) {
+      // check sai tên cột
+      if (json_table_T_REL[nmPhysicColumnTableT_REL] == undefined || json_table_T_REL[nmPhysicColumnTableT_REL] == null) {
+        alert(`Kiểm tra lại tên cột ${nmPhysicColumnTableT_REL} trong file mapping.`);
+        return false;
+      }
 
-        if (json_table_T_REL[NameTableT_REL].TYPE == "VARCHAR2") {
-          defaultValue = `'${json_table_T_REL[NameTableT_REL].DEFAULT}'`
+      if (!json_table_T_REL[nmPhysicColumnTableT_REL].NULLABLE) {
+
+        if (json_table_T_REL[nmPhysicColumnTableT_REL].TYPE == "VARCHAR2") {
+          defaultValue = `'${json_table_T_REL[nmPhysicColumnTableT_REL].DEFAULT}'`
         } else {
-          defaultValue = `${json_table_T_REL[NameTableT_REL].DEFAULT}`
+          defaultValue = `${json_table_T_REL[nmPhysicColumnTableT_REL].DEFAULT}`
         }
 
         if (len > 5) {
           var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[5]; // lay ra gia tri cua colunm Note
           var NameTableWK = parse_json_mapping[x][keyOfNameTableWK];
         } else {
-         var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[4]; // ten logic cua T_RdEL
+          var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[4]; // ten logic cua T_RdEL
           var NameTableWK = parse_json_mapping[x][keyOfNameTableWK];
         }
         nullValue = `,NVL(${NameTableWK}, ${defaultValue})`;
       } else {
         nullValue = `,${NameTableWK}`;
       }
-      
+
       let spaceBeforeAs = "                                             ".slice(nullValue.length);
-      outputSelect += "      " + nullValue + spaceBeforeAs + "AS       " + NameTableT_REL + "\r";
+      outputSelect += "      " + nullValue + spaceBeforeAs + "AS       " + nmPhysicColumnTableT_REL + "\r";
     }
   }
   return output = outputInsert + outputSelect + outputWhere;

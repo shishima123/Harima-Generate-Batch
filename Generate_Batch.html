@@ -52,6 +52,7 @@
 
           var namePhysicTableT_REL = Object.keys(parse_json_mapping[0])[0]; // ten vat ly cua bang t_rel
           var namePhysicTableWK = Object.keys(parse_json_mapping[0])[3]; // ten vat ly cua bang WK
+          // console.log(json_table_WK)
           // console.log(json_table_T_REL)
 
           // Chon loai Batch se duoc gen
@@ -82,11 +83,22 @@
               var startToCompare = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var compareToDeclare = Compare_To_Declare_BO_L_B_D();
               var declareToSubStrb = Declare_To_SubStrbL_BO_L_B_D(json_table_WK);
-              var subStrbLToSubStrbBD = SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK);
+              var subStrbLToSubStrbBD = SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK);
               var subStrbBDToInsertT_REL = SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
 
               var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbLToSubStrbBD + subStrbBDToInsertT_REL + insertT_RELToEnd;
+              break;
+
+            case "BO_A_B_C_D_E":
+              var startToCompare = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var compareToDeclare = Compare_To_Declare_BO_A_B_C_D_E();
+              var declareToSubStrbA = Declare_To_SubStrbA_BO_A_B_C_D_E(json_table_WK);
+              var subStrbAToSubStrbBCDE = SubStrbA_To_SubStrbBCDE_BO_A_B_C_D_E(json_table_WK ,namePhysicTableWK);
+              var subStrbBCDEToInsertT_REL = SubStrbBCDE_To_Insert_T_REL_BO_A_B_C_D_E(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+
+              var output = startToCompare + compareToDeclare + declareToSubStrbA + subStrbAToSubStrbBCDE + subStrbBCDEToInsertT_REL + insertT_RELToEnd;
               break;
             default:
               if (confirm("Chưa Chọn Loại Batch cần Tạo!")) {
@@ -96,7 +108,13 @@
               }
           }
 
-          $("#xlx_json").val(output);
+          if (insertT_RELToEnd) {
+            $("#xlx_json").val(output);
+          } else {
+            $("#xlx_json").val('');
+          }
+
+          $('#upload').val('');
         };
 
         reader.onerror = function (ex) {
@@ -127,7 +145,7 @@
     font-size: 1.25em;
     font-weight: 700;
     color: white;
-    background-color: black;
+    background-color: #1976d2;
     display: inline-block;
     cursor: pointer;
     width: 140px;
@@ -135,9 +153,9 @@
     border-radius: 5px;
   }
 
-  .inputfile:focus + label,
+  .inputfile:hover + label,
   .inputfile + label:hover {
-      background-color: red;
+      background-color: #c62828;
   }
   </style>
 </head>
@@ -167,14 +185,16 @@
             <option value="WO_HD_DT_TR">WO_HD_DT_TR</option>
             <option value="WO_HD_DT">WO_HD_DT</option>
             <option value="BO_L_B_D">BO_L_B_D</option>
-            <option>4</option>
+            <option value="BO_A_B_C_D_E">BO_A_B_C_D_E</option>
             <option>5</option>
           </select>
         </div>
         <div class="form-group">
           <form enctype="multipart/form-data" class="mt-5 text-center">
             <input id="upload" type="file" class="inputfile" />
-            <label for="upload">Choose a file</label>
+            <label for="upload">
+              <p class="m-0 h-100 d-flex align-items-center justify-content-center">Choose a file</p>
+            </label>
           </form>
         </div>
       </div>
@@ -195,6 +215,7 @@
   <script src="./WO/WO_Common.js"></script>
   <script src="./BO/BO_Common.js"></script>
   <script src="./BO/BO_L_B_D.js"></script>
+  <script src="./BO/BO_A_B_C_D_E.js"></script>
 </body>
 
 </html>

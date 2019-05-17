@@ -1,4 +1,4 @@
-function Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_REL ,namePhysicTableWK) {
+function Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK) {
   var dateObj = new Date();
   var month = dateObj.getUTCMonth() + 1; //months from 1-12
   var day = dateObj.getUTCDate();
@@ -8,10 +8,10 @@ function Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg ,namePhysicTableT_RE
 
   var dateNow = year + "/" + month + "/" + day;
 
-  msgERRCD = namePKG.slice(2,5);
+  msgERRCD = namePKG.slice(2, 5);
 
-  var startToCompare = 
-`CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
+  var startToCompare =
+    `CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
 /***************************************************************************************************
  * 名称  ： ${nameJapanOfPkg}（パッケージ定義）                                                       *
  * 作成日： ${dateNow}                                                                               *
@@ -133,23 +133,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
   return startToCompare;
 }
 
-function Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK,namePKG) {
+function Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG) {
   // Chon loai Batch se duoc gen
   var type = $("#typeBatch option:selected").val();
 
   switch (type) {
-  case "WO_HD_DT_TR":
-    var whereExtend = '';
-    break;
-  case "WO_HD_DT":
-    var whereExtend = 'AND H_TAG IS NOT NULL';
-    break;
-  default:
-        var whereExtend = '';
+    case "WO_HD_DT_TR":
+      var whereExtend = '';
+      break;
+    case "WO_HD_DT":
+      var whereExtend = '\r      AND H_TAG IS NOT NULL';
+      break;
+    default:
+      var whereExtend = '';
   }
 
   var outputInsert = `
-    -- ${namePhysicTableWK}から${namePhysicTableT_REL}乳挿入する
+    -- ${namePhysicTableWK}から{namePhysicTableT_REL}を挿入する
     INSERT INTO ${namePhysicTableT_REL}
       (CO_CD               -- 会社コード
       ,EIGYO_CD            -- 営業所コード
@@ -204,8 +204,7 @@ function Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, nam
     FROM ${namePhysicTableWK}
     WHERE CO_CD = IN_CO_CD
       AND EIGYO_CD = IN_EIGYO_CD
-      AND SHUHAISHIN_SEQ = IN_SHUHAISHIN_SEQ
-      ${whereExtend}
+      AND SHUHAISHIN_SEQ = IN_SHUHAISHIN_SEQ${whereExtend}
     ORDER BY WORKSHUHAISHIN_SEQ_NO;
 
     RETURN;
@@ -240,8 +239,14 @@ END PKG_${namePKG};
       // lay ra cot cua bang WK de insert vao bang T_REl
       var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[4]; // ten logic cua T_REL
       var NameTableWK = parse_json_mapping[x][keyOfNameTableWK];
-      
+
       var nullValue;
+
+      // check sai tên cột
+      if (json_table_T_REL[NameTableT_REL] == undefined || json_table_T_REL[NameTableT_REL] == null) {
+        alert(`Kiểm tra lại tên cột ${NameTableT_REL} trong file mapping.`);
+        return false;
+      }
 
       if (!json_table_T_REL[NameTableT_REL].NULLABLE) {
 
@@ -255,14 +260,14 @@ END PKG_${namePKG};
           var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[5]; // lay ra gia tri cua colunm Note
           var NameTableWK = parse_json_mapping[x][keyOfNameTableWK];
         } else {
-         var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[4]; // ten logic cua T_RdEL
+          var keyOfNameTableWK = Object.keys(parse_json_mapping[x])[4]; // ten logic cua T_RdEL
           var NameTableWK = parse_json_mapping[x][keyOfNameTableWK];
         }
         nullValue = `,NVL(${NameTableWK}, ${defaultValue})`;
       } else {
         nullValue = `,${NameTableWK}`;
       }
-      
+
       let spaceBeforeAs = "                                             ".slice(nullValue.length);
       outputSelect += "      " + nullValue + spaceBeforeAs + "AS       " + NameTableT_REL + "\r";
     }

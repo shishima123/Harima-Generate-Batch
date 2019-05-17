@@ -10,9 +10,9 @@ function Compare_To_Declare_BO_L_B_D() {
                     OUT_ERR_MSG := STR_ERRMSG_E10;
                   GOTO ERR;
                 ELSIF STR_REC_KBN = 'B' THEN
-                     OUT_DENPYO_KENSU          := OUT_DENPYO_KENSU + 1;                -- 伝票枚数
+                  OUT_DENPYO_KENSU          := OUT_DENPYO_KENSU + 1;                -- 伝票枚数
                 ELSIF STR_REC_KBN = 'D' THEN
-                     OUT_MEISAI_KENSU          := OUT_MEISAI_KENSU + 1;                -- 明細件数
+                  OUT_MEISAI_KENSU          := OUT_MEISAI_KENSU + 1;                -- 明細件数
                 END IF;
 
                 /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
@@ -37,12 +37,12 @@ function Compare_To_Declare_BO_L_B_D() {
                     STR_ZEN_REC_KBN := STR_REC_KBN;
                 --フォーマットID Aのレコードの次はBでなければエラー
                 ELSIF STR_ZEN_REC_KBN = 'L' THEN
-                 IF STR_REC_KBN <> 'B' THEN
-                   --ｴﾗｰﾌﾗｸﾞをｾｯﾄ
-                   OUT_ERR_CD := STR_ERRCD_E11;
-                   --ｴﾗｰﾒｯｾｰｼﾞのｾｯﾄ
-                   OUT_ERR_MSG := STR_ERRMSG_E11;
-                   GOTO ERR;
+                  IF STR_REC_KBN <> 'B' THEN
+                    --ｴﾗｰﾌﾗｸﾞをｾｯﾄ
+                    OUT_ERR_CD := STR_ERRCD_E11;
+                    --ｴﾗｰﾒｯｾｰｼﾞのｾｯﾄ
+                    OUT_ERR_MSG := STR_ERRMSG_E11;
+                    GOTO ERR;
                   END IF;
                 ELSIF STR_ZEN_REC_KBN = 'B' THEN
                   IF STR_REC_KBN <> 'D' THEN
@@ -112,6 +112,8 @@ function Declare_To_SubStrbL_BO_L_B_D(json_table_WK) {
       let spaceAfterVarchar2 = "          ".slice(digit.toString().length);
 
       declare += "        " + phyNm + spaceAfterPhysicNm + "VARCHAR2(" + json_table_WK[i].DIGIT + ")," + spaceAfterVarchar2 + "-- " + json_table_WK[i].LOG_NM + "\r";
+    } else if (firstChar == "Y") {
+      break;
     }
   }
 
@@ -123,14 +125,14 @@ function Declare_To_SubStrbL_BO_L_B_D(json_table_WK) {
   return output;
 }
 
-function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK) {
+function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
   let SubStrb = `
     LOOP UTL_FILE.GET_LINE(WK_FILE_HANDLE, WK_V_WRITCHAR);
 
-      --エンドレコードのレコード区分（'END  '）になるまで処理を行う
+      -- エンドレコードのレコード区分（'END  '）になるまで処理を行う
       EXIT WHEN SUBSTRB(WK_V_WRITCHAR,1,5) = STR_END;
 
-        --1ﾚｺｰﾄﾞがすべて空白以外のﾁｪｯｸを行う
+        -- 1ﾚｺｰﾄﾞがすべて空白以外のﾁｪｯｸを行う
         IF TRIM(WK_V_WRITCHAR) IS NOT NULL THEN
 
           -- レコード区分を変数に代入
@@ -144,15 +146,15 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK) {
             REC.JYUSHIN_YMD           := SUBSTRB(WK_V_WRITCHAR, 23, 8);           -- 受信日
             REC.JYUSHIN_TIME          := SUBSTRB(WK_V_WRITCHAR, 31, 6);           -- 受信時刻
 
-          --伝票明細（L）
+          -- 伝票明細（L）
           ELSIF STR_REC_KBN = 'L' THEN
             REC.WORKSHUHAISHIN_SEQ_NO := REC.WORKSHUHAISHIN_SEQ_NO + 1;
 `;
 
   let insert1 = `
 
-          --フォーマットLでテーブルWK_E_ORD_DAISHO_VANに挿入
-          INSERT INTO WK_E_ORD_DAISHO_VAN
+          -- フォーマットLでテーブル${namePhysicTableWK}に挿入
+          INSERT INTO ${namePhysicTableWK}
             (CO_CD
             ,EIGYO_CD
             ,SHUHAISHIN1_CD
@@ -226,17 +228,17 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK) {
 
 function SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK) {
   let strbB = `
-          --伝票明細（B）
+          -- 伝票明細（B）
           ELSIF STR_REC_KBN = 'B' THEN
 `;
 
   let strbD = `
 
-          --伝票明細（D）
+          -- 伝票明細（D）
           ELSIF STR_REC_KBN = 'D' THEN
-            TYPE_D.HD_SEQ_NO               := REC.WORKSHUHAISHIN_SEQ_NO + 1;           --フォーマットBDにSEQ_NOを設定
-            REC.WORKSHUHAISHIN_SEQ_NO      := TYPE_D.HD_SEQ_NO;                        --フォーマットCの連続カウント
-            STR_COUNT                       := STR_COUNT + 1;
+            TYPE_D.HD_SEQ_NO               := REC.WORKSHUHAISHIN_SEQ_NO + 1;           -- フォーマットBDにSEQ_NOを設定
+            REC.WORKSHUHAISHIN_SEQ_NO      := TYPE_D.HD_SEQ_NO;                        -- フォーマットCの連続カウント
+            STR_COUNT                      := STR_COUNT + 1;
 `;
 
   let beforeInsert = `
@@ -246,9 +248,9 @@ function SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK) {
             WK_FLG                    := TRUE;
             STR_COUNT                  := 0;
 
-           END IF;
+          END IF;
 
-          --フォーマットHDのデータを挿入
+          -- フォーマットHDのデータを挿入
           IF WK_FLG THEN
             FOR i IN TABLE_D.FIRST .. TABLE_D.LAST
               LOOP
@@ -273,7 +275,7 @@ function SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK) {
                   ,UPD_DATETIME
                   ,UPD_USER_CD
                   ,UPD_PG)
-                  VALUES
+                VALUES
                   (IN_CO_CD
                   ,IN_EIGYO_CD
                   ,REC.SHUHAISHIN1_CD
@@ -349,6 +351,6 @@ function SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK) {
     }
 
   }
-  output = strbB + strbD + beforeInsert + midInsert + afterInsert;
-  return output
+  var output = strbB + strbD + beforeInsert + midInsert + afterInsert;
+  return output;
 }
