@@ -93,8 +93,8 @@ function Compare_To_Declare_BO_L_B_D() {
 function Declare_To_SubStrbL_BO_L_B_D(json_table_WK) {
   let declare = `
     -- フォーマットDの型宣言
-    DECLARE TYPE  D_REC IS RECORD (
-        HD_SEQ_NO NUMBER := 1,--カウントフォーマットBD
+    DECLARE TYPE D_REC IS RECORD (
+        HD_SEQ_NO NUMBER := 1,-- カウントフォーマットBD
 `;
   let afterDeclare = `
     -- テーブルTR_Dの型を追加する
@@ -129,7 +129,7 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
   let SubStrb = `
     LOOP UTL_FILE.GET_LINE(WK_FILE_HANDLE, WK_V_WRITCHAR);
 
-      -- エンドレコードのレコード区分（'END  '）になるまで処理を行う
+      -- エンドレコードのレコード区分（'END'）になるまで処理を行う
       EXIT WHEN SUBSTRB(WK_V_WRITCHAR,1,5) = STR_END;
 
         -- 1ﾚｺｰﾄﾞがすべて空白以外のﾁｪｯｸを行う
@@ -151,7 +151,7 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
             REC.WORKSHUHAISHIN_SEQ_NO := REC.WORKSHUHAISHIN_SEQ_NO + 1;
 `;
 
-  let insert1 = `
+  let beforeInsert = `
 
           -- フォーマットLでテーブル${namePhysicTableWK}に挿入
           INSERT INTO ${namePhysicTableWK}
@@ -167,7 +167,7 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
             ,JYUSHIN_USER_CD
 `;
 
-  let insert2 = `
+  let midInsert = `
             ,UPD_CNT
             ,DEL_FLG
             ,INS_DATETIME
@@ -187,9 +187,9 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
             ,REC.JYUSHIN_YMD
             ,REC.JYUSHIN_TIME
             ,IN_JYUSHIN_USER_CD
-`
+`;
 
-  let insert3 = `
+  let afterInsert = `
             ,1
             ,E.FN_削除フラグ('有効')
             ,SYSTIMESTAMP(3)
@@ -199,7 +199,6 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
             ,C_USER_ID
             ,C_PGID);
 `;
-
 
   var pos = 1;
   for (var i in json_table_WK) {
@@ -215,14 +214,14 @@ function SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK) {
       let spaceAfterSubStrb = "              -- ".slice(lenSubStrb);
 
       SubStrb += "            REC." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
-      insert1 += "            ," + phyNm + "\r";
-      insert2 += "            ,REC." + phyNm + "\r";
+      beforeInsert += "            ," + phyNm + "\r";
+      midInsert += "            ,REC." + phyNm + "\r";
       pos = pos + Number(digit);
     } else if (firstChar == "D") {
       break;
     }
   }
-  let output = SubStrb + insert1 + insert2 + insert3;
+  let output = SubStrb + beforeInsert + midInsert + afterInsert;
   return output;
 }
 

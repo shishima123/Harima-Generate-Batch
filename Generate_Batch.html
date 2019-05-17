@@ -101,6 +101,18 @@
 
               var output = startToCompare + compareToDeclare + declareToSubStrbA + subStrbAToSubStrbBCDE + subStrbBCDEToInsertT_REL + insertT_RELToEnd;
               break;
+
+            case "BO_A_B_D_E":
+            debugger;
+              var startToCompare = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var compareToDeclare = Compare_To_Declare_BO_A_B_D_E();
+              var declareToSubStrb = Declare_To_SubStrbL_BO_A_B_D_E(json_table_WK);
+              var subStrbAToSubStrbBDE = SubStrbA_To_SubStrbBDE_BO_A_B_D_E(json_table_WK, namePhysicTableWK);
+              // var subStrbBDToInsertT_REL = SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+
+              var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbAToSubStrbBDE + insertT_RELToEnd;
+              break;
             default:
               if (confirm("Chưa Chọn Loại Batch cần Tạo!")) {
                 location.reload();
@@ -187,7 +199,7 @@
             <option value="WO_HD_DT">WO_HD_DT</option>
             <option value="BO_L_B_D">BO_L_B_D</option>
             <option value="BO_A_B_C_D_E">BO_A_B_C_D_E</option>
-            <option>5</option>
+            <option value="BO_A_B_D_E">BO_A_B_D_E</option>
           </select>
         </div>
         <div class="form-group">
@@ -253,6 +265,7 @@
     <script src="./BO/BO_Common.js"></script>
     <script src="./BO/BO_L_B_D.js"></script>
     <script src="./BO/BO_A_B_C_D_E.js"></script>
+    <script src="./BO/BO_A_B_D_E.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
       crossorigin="anonymous"></script>
