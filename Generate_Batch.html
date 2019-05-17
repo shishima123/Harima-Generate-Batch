@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Tool Generate Batch</title>
-  <link rel="shortcut icon" type="image/png" href="/favicon.ico"/>
+  <link rel="shortcut icon" type="image/png" href="./favicon.ico" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -84,7 +84,7 @@
               var startToCompare = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var compareToDeclare = Compare_To_Declare_BO_L_B_D();
               var declareToSubStrb = Declare_To_SubStrbL_BO_L_B_D(json_table_WK);
-              var subStrbLToSubStrbBD = SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK ,namePhysicTableWK);
+              var subStrbLToSubStrbBD = SubStrbL_To_SubStrbBD_BO_L_B_D(json_table_WK, namePhysicTableWK);
               var subStrbBDToInsertT_REL = SubStrbBD_To_Insert_T_REL_BO_L_B_D(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
 
@@ -95,7 +95,7 @@
               var startToCompare = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var compareToDeclare = Compare_To_Declare_BO_A_B_C_D_E();
               var declareToSubStrbA = Declare_To_SubStrbA_BO_A_B_C_D_E(json_table_WK);
-              var subStrbAToSubStrbBCDE = SubStrbA_To_SubStrbBCDE_BO_A_B_C_D_E(json_table_WK ,namePhysicTableWK);
+              var subStrbAToSubStrbBCDE = SubStrbA_To_SubStrbBCDE_BO_A_B_C_D_E(json_table_WK, namePhysicTableWK);
               var subStrbBCDEToInsertT_REL = SubStrbBCDE_To_Insert_T_REL_BO_A_B_C_D_E(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
 
@@ -133,31 +133,31 @@
     }
   </script>
   <style>
-  .inputfile {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
+    .inputfile {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
     }
 
-  .inputfile + label {
-    font-size: 1.25em;
-    font-weight: 700;
-    color: white;
-    background-color: #1976d2;
-    display: inline-block;
-    cursor: pointer;
-    width: 140px;
-    height: 40px;
-    border-radius: 5px;
-  }
+    .inputfile+label {
+      font-size: 1.25em;
+      font-weight: 700;
+      color: white;
+      background-color: #1976d2;
+      display: inline-block;
+      cursor: pointer;
+      width: 140px;
+      height: 40px;
+      border-radius: 5px;
+    }
 
-  .inputfile:hover + label,
-  .inputfile + label:hover {
+    .inputfile:hover+label,
+    .inputfile+label:hover {
       background-color: #c62828;
-  }
+    }
   </style>
 </head>
 
@@ -198,6 +198,12 @@
             </label>
           </form>
         </div>
+
+        <div class="form-group mt-5 d-flex justify-content-center">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalScrollable">
+            HDSD
+          </button>
+        </div>
       </div>
       <div class=" col-10">
         <textarea class="form-control" rows="25" cols="120" id="xlx_json"></textarea>
@@ -205,18 +211,44 @@
     </div>
   </div>
 
-  <script>
-    document
-      .getElementById("upload")
-      .addEventListener("change", handleFileSelect, false);
-  </script>
-  <script src="./core.js"></script>
-  <script src="./WO/WO_HD_DT_TR.js"></script>
-  <script src="./WO/WO_HD_DT.js"></script>
-  <script src="./WO/WO_Common.js"></script>
-  <script src="./BO/BO_Common.js"></script>
-  <script src="./BO/BO_L_B_D.js"></script>
-  <script src="./BO/BO_A_B_C_D_E.js"></script>
+  <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalScrollableTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      document
+        .getElementById("upload")
+        .addEventListener("change", handleFileSelect, false);
+    </script>
+    <script src="./core.js"></script>
+    <script src="./WO/WO_HD_DT_TR.js"></script>
+    <script src="./WO/WO_HD_DT.js"></script>
+    <script src="./WO/WO_Common.js"></script>
+    <script src="./BO/BO_Common.js"></script>
+    <script src="./BO/BO_L_B_D.js"></script>
+    <script src="./BO/BO_A_B_C_D_E.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
 </body>
 
 </html>

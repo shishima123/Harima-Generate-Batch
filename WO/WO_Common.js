@@ -149,7 +149,7 @@ function Insert_T_REL_To_End_WO_Common(parse_json_mapping, json_table_T_REL, nam
   }
 
   var outputInsert = `
-    -- ${namePhysicTableWK}から{namePhysicTableT_REL}を挿入する
+    -- ${namePhysicTableWK}から${namePhysicTableT_REL}を挿入する
     INSERT INTO ${namePhysicTableT_REL}
       (CO_CD               -- 会社コード
       ,EIGYO_CD            -- 営業所コード
