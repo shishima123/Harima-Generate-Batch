@@ -40,7 +40,7 @@ function Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_RE
   }
 
   var startToCompare =
-    `CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
+`CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
 /********************************************************************************************
  * 名称   ： ${nameJapanOfPkg}（パッケージ定義）                                        *
  * 作成日 ： ${dateNow}                                                                      *
@@ -65,6 +65,7 @@ function Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_RE
 
 END PKG_${namePKG};
 /
+
 CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
 /********************************************************************************************
  * 名称    ： ${nameJapanOfPkg}（パッケージ本体）                                      *

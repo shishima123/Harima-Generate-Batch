@@ -107,10 +107,19 @@
               var compareToDeclare = Compare_To_Declare_BO_A_B_D_E();
               var declareToSubStrb = Declare_To_SubStrbL_BO_A_B_D_E(json_table_WK);
               var subStrbAToSubStrbBDE = SubStrbA_To_SubStrbBDE_BO_A_B_D_E(json_table_WK, namePhysicTableWK);
-              var subStrbBDToInsertT_REL = SubStrbBDE_To_Insert_T_REL_BO_A_B_D_E (json_table_WK, namePhysicTableWK);
+              var subStrbBDToInsertT_REL = SubStrbBDE_To_Insert_T_REL_BO_A_B_D_E(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
 
               var output = startToCompare + compareToDeclare + declareToSubStrb + subStrbAToSubStrbBDE + subStrbBDToInsertT_REL + insertT_RELToEnd;
+              break;
+
+            case "BO_Line_Blank":
+
+              var startToSubstrb = Start_To_Substrb_BO_Line_Blank(namePKG, nameJapanOfPkg, namePhysicTableWK);
+              var subsrtbToInsertWK = SubStrb_To_Insert_WK_BO_Line_Blank(json_table_WK);
+              var insertWKToT_REl = Insert_WK_To_T_REL_BO_Line_Blank(json_table_WK ,namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_BO_Line_Blank(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+              var output = startToSubstrb + subsrtbToInsertWK +  insertWKToT_REl + insertT_RELToEnd;
               break;
             default:
               if (confirm("Chưa Chọn Loại Batch cần Tạo!")) {
@@ -199,6 +208,7 @@
             <option value="BO_L_B_D">BO_L_B_D</option>
             <option value="BO_A_B_C_D_E">BO_A_B_C_D_E</option>
             <option value="BO_A_B_D_E">BO_A_B_D_E</option>
+            <option value="BO_Line_Blank">BO_Line_Blank</option>
           </select>
         </div>
         <div class="form-group">
@@ -211,13 +221,14 @@
         </div>
 
         <div class="form-group mt-5 d-flex justify-content-center">
-          <button type="button" class="btn btn-success font-weight-bold" data-toggle="modal" data-target="#exampleModalScrollable" style="width: 140px;height: 40px;">
+          <button type="button" class="btn btn-success font-weight-bold" data-toggle="modal"
+            data-target="#exampleModalScrollable" style="width: 140px;height: 40px;">
             Document
           </button>
         </div>
       </div>
       <div class=" col-10">
-        <textarea class="form-control" rows="25" cols="120" id="xlx_json"></textarea>
+        <textarea class="form-control" rows="33" cols="120" id="xlx_json"></textarea>
       </div>
     </div>
   </div>
@@ -265,6 +276,7 @@
     <script src="./BO/BO_L_B_D.js"></script>
     <script src="./BO/BO_A_B_C_D_E.js"></script>
     <script src="./BO/BO_A_B_D_E.js"></script>
+    <script src="./BO/BO_Line_Blank.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
       crossorigin="anonymous"></script>
