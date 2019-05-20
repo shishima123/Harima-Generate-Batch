@@ -135,7 +135,7 @@ function Declare_To_SubStrbL_BO_A_B_D_E(json_table_WK) {
   return output;
 }
 
-function SubStrbA_To_SubStrbBDE_BO_A_B_D_E(json_table_WK ,namePhysicTableWK) {
+function SubStrbA_To_SubStrbBDE_BO_A_B_D_E(json_table_WK, namePhysicTableWK) {
   let SubStrb = `
     LOOP UTL_FILE.GET_LINE(WK_FILE_HANDLE, WK_V_WRITCHAR);
 
@@ -216,12 +216,12 @@ function SubStrbA_To_SubStrbBDE_BO_A_B_D_E(json_table_WK ,namePhysicTableWK) {
 
     if (firstChar == "F") {
       let phyNm = json_table_WK[i].PHY_NM;
-      let spaceAfterPhysicNm = "                      ".slice(phyNm.length);
+      let spaceAfterPhysicNm = "                          ".slice(phyNm.length);
       let digit = json_table_WK[i].DIGIT;
       let subStrb = `:= SUBSTRB(WK_V_WRITCHAR, ${pos}, ${digit});`
       let logicNm = json_table_WK[i].LOG_NM;
       let lenSubStrb = pos.toString().length + digit.toString().length;
-      let spaceAfterSubStrb = "              -- ".slice(lenSubStrb);
+      let spaceAfterSubStrb = "          -- ".slice(lenSubStrb);
 
       SubStrb += "            REC." + phyNm + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
       beforeInsert += "              ," + phyNm + "\r";
@@ -232,5 +232,159 @@ function SubStrbA_To_SubStrbBDE_BO_A_B_D_E(json_table_WK ,namePhysicTableWK) {
     }
   }
   let output = SubStrb + beforeInsert + midInsert + afterInsert;
+  return output;
+}
+
+function SubStrbBDE_To_Insert_T_REL_BO_A_B_D_E(json_table_WK, namePhysicTableWK) {
+  let strbB = `
+          -- 伝票明細（B）
+          ELSIF STR_REC_KBN = 'B' THEN
+`;
+
+  let strbD = `
+
+          -- 伝票明細（D）
+          ELSIF STR_REC_KBN = 'D' THEN
+            TYPE_D.BDE_SEQ_NO          := REC.WORKSHUHAISHIN_SEQ_NO + 1;        -- フォーマットBDEにSEQ_NOを設定
+            REC.WORKSHUHAISHIN_SEQ_NO  := TYPE_D.BDE_SEQ_NO;                    -- フォーマットAの連続カウント
+            strCOUNT                   := strCOUNT + 1;
+`;
+
+  let strbE = `
+
+            TABLE_D.extend;
+            TABLE_D(strCOUNT) := TYPE_D;
+
+          --伝票明細（E）
+          ELSIF STR_REC_KBN = 'E' THEN
+`;
+
+  let beforeInsert = `
+            WK_FLG                     := TRUE;
+            strCOUNT                   := 0;
+
+          END IF;
+
+          -- フォーマットBDEのデータを挿入
+          IF WK_FLG THEN
+            FOR i IN TABLE_D.FIRST .. TABLE_D.LAST
+              LOOP
+                INSERT INTO ${namePhysicTableWK}
+                  (CO_CD
+                  ,EIGYO_CD
+                  ,SHUHAISHIN1_CD
+                  ,SHUHAISHIN2_CD
+                  ,SHUHAISHIN3_CD
+                  ,SHUHAISHIN_SEQ
+                  ,WORKSHUHAISHIN_SEQ_NO
+                  ,JYUSHIN_YMD
+                  ,JYUSHIN_TIME
+                  ,JYUSHIN_USER_CD
+`;
+
+  let midInsert = `
+                  ,UPD_CNT
+                  ,DEL_FLG
+                  ,INS_DATETIME
+                  ,INS_USER_CD
+                  ,INS_PG
+                  ,UPD_DATETIME
+                  ,UPD_USER_CD
+                  ,UPD_PG)
+                VALUES
+                  (IN_CO_CD
+                  ,IN_EIGYO_CD
+                  ,REC.SHUHAISHIN1_CD
+                  ,REC.SHUHAISHIN2_CD
+                  ,REC.SHUHAISHIN3_CD
+                  ,IN_SHUHAISHIN_SEQ
+                  ,TABLE_D(i).BDE_SEQ_NO
+                  ,REC.JYUSHIN_YMD
+                  ,REC.JYUSHIN_TIME
+                  ,IN_JYUSHIN_USER_CD
+`;
+
+  let afterInsert = `
+                  ,1
+                  ,E.FN_削除フラグ('有効')
+                  ,SYSTIMESTAMP(3)
+                  ,C_USER_ID
+                  ,C_PGID
+                  ,SYSTIMESTAMP(3)
+                  ,C_USER_ID
+                  ,C_PGID);
+              END LOOP;
+            -- インデックスを設定するためにテーブルを削除する
+            TABLE_D.delete;
+
+            END IF; --終了挿入フォーマットBDE
+            WK_FLG            := FALSE;
+
+        END IF;
+    END LOOP;
+
+    END; -- 終了テーブルtr_d
+`;
+
+  var posOfB = 1;
+  var posOfD = 1;
+  var posOfE = 1;
+  for (var i in json_table_WK) {
+    var firstChar = json_table_WK[i].PHY_NM.slice(0, 1);
+
+    // thoat vong lap neu gap phai YOBI
+    if (firstChar == "Y") {
+      break;
+    } else if (firstChar == "H") {
+      let namePhysic = json_table_WK[i].PHY_NM;
+      let nameLogic = json_table_WK[i].LOG_NM;
+      let spaceAfterPhysicNm = "                        ".slice(namePhysic.length);
+
+      let digit = json_table_WK[i].DIGIT;
+      let subStrb = `:= SUBSTRB(WK_V_WRITCHAR, ${posOfB}, ${digit});`
+      let logicNm = json_table_WK[i].LOG_NM;
+      let lenSubStrb = posOfB.toString().length + digit.toString().length;
+      let spaceAfterSubStrb = "          -- ".slice(lenSubStrb);
+
+      strbB += "            REC." + namePhysic + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
+      beforeInsert += "                  ," + namePhysic + spaceAfterPhysicNm + "-- " + nameLogic + "\r";
+      midInsert += "                  ,REC." + namePhysic + "\r";
+      posOfB = posOfB + Number(digit);
+    } else if (firstChar == "M") {
+      let namePhysic = json_table_WK[i].PHY_NM;
+      let nameLogic = json_table_WK[i].LOG_NM;
+      let spaceAfterPhysicNm = "                    ".slice(namePhysic.length);
+
+      let digit = json_table_WK[i].DIGIT;
+      let subStrb = `:= SUBSTRB(WK_V_WRITCHAR, ${posOfD}, ${digit});`
+      let logicNm = json_table_WK[i].LOG_NM;
+      let lenSubStrb = posOfD.toString().length + digit.toString().length;
+      let spaceAfterSubStrb = "           -- ".slice(lenSubStrb);
+      let spaceAfterPhysicNm2 = "                        ".slice(namePhysic.length);
+
+      strbD += "            TYPE_D." + namePhysic + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
+      beforeInsert += "                  ," + namePhysic + spaceAfterPhysicNm2 + "-- " + nameLogic + "\r";
+      midInsert += "                  ,TABLE_D(i)." + namePhysic + "\r";
+      posOfD = posOfD + Number(digit);
+    } else if (firstChar == "T") {
+      let namePhysic = json_table_WK[i].PHY_NM;
+      let nameLogic = json_table_WK[i].LOG_NM;
+      let spaceAfterPhysicNm = "                       ".slice(namePhysic.length);
+
+      let digit = json_table_WK[i].DIGIT;
+      let subStrb = `:= SUBSTRB(WK_V_WRITCHAR, ${posOfE}, ${digit});`
+      let logicNm = json_table_WK[i].LOG_NM;
+      let lenSubStrb = posOfE.toString().length + digit.toString().length;
+      let spaceAfterSubStrb = "            -- ".slice(lenSubStrb);
+      let spaceAfterPhysicNm2 = "                        ".slice(namePhysic.length);
+
+      strbE += "            REC." + namePhysic + spaceAfterPhysicNm + subStrb + spaceAfterSubStrb + logicNm + "\r";
+      beforeInsert += "                  ," + namePhysic + spaceAfterPhysicNm2 + "-- " + nameLogic + "\r";
+      midInsert += "                  ,REC." + namePhysic + "\r";
+      posOfE = posOfE + Number(digit);
+    }
+
+  }
+  var output = strbB + strbD + strbE + beforeInsert + midInsert + afterInsert;
   return output;
 }

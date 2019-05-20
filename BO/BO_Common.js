@@ -160,12 +160,15 @@ function Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, nam
     case "BO_A_B_C_D_E":
       var whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
       break;
+    case "BO_A_B_D_E":
+      var whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
+      break;
     default:
       var whereExtend = '';
   }
 
   var outputInsert = `
-    -- ${namePhysicTableWK}から{namePhysicTableT_REL}を挿入する
+    -- ${namePhysicTableWK}から${namePhysicTableT_REL}を挿入する
     INSERT INTO ${namePhysicTableT_REL}
       (CO_CD                     -- 会社コード
       ,EIGYO_CD                  -- 営業所コード
@@ -215,7 +218,7 @@ function Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, nam
       ,C_USER_ID
       ,C_PGID
 
-    FROM WK_E_ORD_YAMADA_STORE
+    FROM ${namePhysicTableWK}
     WHERE CO_CD            = IN_CO_CD
       AND EIGYO_CD         = IN_EIGYO_CD
       AND SHUHAISHIN_SEQ   = IN_SHUHAISHIN_SEQ${whereExtend}
