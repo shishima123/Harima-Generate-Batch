@@ -114,12 +114,20 @@
               break;
 
             case "BO_Line_Blank":
-
-              var startToSubstrb = Start_To_Substrb_BO_Line_Blank(namePKG, nameJapanOfPkg, namePhysicTableWK);
-              var subsrtbToInsertWK = SubStrb_To_Insert_WK_BO_Line_Blank(json_table_WK);
-              var insertWKToT_REl = Insert_WK_To_T_REL_BO_Line_Blank(json_table_WK ,namePhysicTableWK);
+              var startToSubStrb = Start_To_Substrb_BO_Line_Blank(namePKG, nameJapanOfPkg, namePhysicTableWK);
+              var subStrbToInsertWK = SubStrb_To_Insert_WK_BO_Line_Blank(json_table_WK);
+              var insertWKToT_REl = Insert_WK_To_T_REL_BO_Line_Blank(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_BO_Line_Blank(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
-              var output = startToSubstrb + subsrtbToInsertWK +  insertWKToT_REl + insertT_RELToEnd;
+              var output = startToSubStrb + subStrbToInsertWK + insertWKToT_REl + insertT_RELToEnd;
+              break;
+
+            case "BO_B_D":
+              var startToSubStrb = Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableWK);
+              var compareToSubStrb = Compare_To_SubStrb_BO_B_D();
+              var subStrToInsertT_REL = SubStrbBD_To_Insert_T_REL_BO_B_D(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+
+              var output = startToSubStrb + compareToSubStrb + subStrToInsertT_REL + insertT_RELToEnd;
               break;
             default:
               if (confirm("Chưa Chọn Loại Batch cần Tạo!")) {
@@ -209,6 +217,7 @@
             <option value="BO_A_B_C_D_E">BO_A_B_C_D_E</option>
             <option value="BO_A_B_D_E">BO_A_B_D_E</option>
             <option value="BO_Line_Blank">BO_Line_Blank</option>
+            <option value="BO_B_D">BO_B_D</option>
           </select>
         </div>
         <div class="form-group">
@@ -277,6 +286,7 @@
     <script src="./BO/BO_A_B_C_D_E.js"></script>
     <script src="./BO/BO_A_B_D_E.js"></script>
     <script src="./BO/BO_Line_Blank.js"></script>
+    <script src="./BO/BO_B_D.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
       crossorigin="anonymous"></script>

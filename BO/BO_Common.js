@@ -12,35 +12,40 @@ function Start_To_Compare_BO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_RE
 
   // Chon loai Batch se duoc gen
   var type = $("#typeBatch option:selected").val();
-
+  var commentFeature = '';
   switch (type) {
     case "BO_L_B_D":
-      var commentFeature = `
+      commentFeature = `
 \r             /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
                 * ﾚｺｰﾄﾞ区分不正ﾁｪｯｸ    ：PG毎に異なる
                                     ：レコード（R）区分　L B D  以外はエラー。の場合、ﾚｺｰﾄﾞ区分不正の為、エラー処理を行う。
                 ********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********/`;
       break;
     case "BO_A_B_C_D_E":
-      var commentFeature = `
-\r       /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
+      commentFeature = `
+\r         /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
           * ﾚｺｰﾄﾞ区分不正ﾁｪｯｸ    ：PG毎に異なる
                                 ：フォーマットID　A B C D E  以外はエラー。の場合、ﾚｺｰﾄﾞ区分不正の為、エラー処理を行う。
           ********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********/`;
       break;
     case "BO_A_B_D_E":
-      var commentFeature = `
-\r       /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
+      commentFeature = `
+\r         /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
           * ﾚｺｰﾄﾞ区分不正ﾁｪｯｸ    ：PG毎に異なる
                               ：フォーマットID　A B D E  以外はエラー。の場合、ﾚｺｰﾄﾞ区分不正の為、エラー処理を行う。
           ********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********/`;
       break;
+    case "BO_B_D":
+      commentFeature = `
+\r          /********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********
+          * ﾚｺｰﾄﾞ区分不正ﾁｪｯｸ    ：PG毎に異なる
+                              ：フォーマットID B D 以外はエラー。の場合、ﾚｺｰﾄﾞ区分不正の為、エラー処理を行う。
+          ********1*********2*********3*********4*********5*********6*********7*********8*********9*********10********11********12********13********14********15********16********/`;
     default:
-      var commentFeature = '';
   }
 
   var startToCompare =
-`CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
+    `CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
 /********************************************************************************************
  * 名称   ： ${nameJapanOfPkg}（パッケージ定義）                                        *
  * 作成日 ： ${dateNow}                                                                      *
@@ -145,7 +150,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
 
           -- レコード区分を変数に代入
           STR_REC_KBN := TRIM(SUBSTRB(WK_V_WRITCHAR, 1, 1));
-          OUT_DATA_KENSU          := OUT_DATA_KENSU + 1; -- タグ Bのレコードの場合、件数をカウントして戻り値・伝票枚数にセット。
+
+          -- タグ Bのレコードの場合、件数をカウントして戻り値・伝票枚数にセット。
+          OUT_DATA_KENSU          := OUT_DATA_KENSU + 1;
 `
   return startToCompare;
 }
@@ -153,19 +160,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
 function Insert_T_REL_To_End_BO_Common(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG) {
   // Chon loai Batch se duoc gen
   var type = $("#typeBatch option:selected").val();
-
+  var whereExtend = '';
   switch (type) {
     case "BO_L_B_D":
-      var whereExtend = '\r      AND DM_REC_KBN IS NOT NULL';
+      whereExtend = '\r      AND DM_REC_KBN IS NOT NULL';
       break;
     case "BO_A_B_C_D_E":
-      var whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
+      whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
       break;
     case "BO_A_B_D_E":
-      var whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
+      whereExtend = '\r      AND H_FORMAT_ID IS NOT NULL';
+      break;
+    case "BO_B_D":
+      whereExtend = '\r      AND M_REC_SHUBT IS NOT NULL';
       break;
     default:
-      var whereExtend = '';
   }
 
   var outputInsert = `

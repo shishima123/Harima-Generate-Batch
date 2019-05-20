@@ -32,7 +32,7 @@ function Compare_To_Declare_WO_HD_DT_TR() {
     REC.WORKSHUHAISHIN_SEQ_NO := 0;`
 
   return compare;
-} 
+}
 
 
 function Declare_To_SubStrb_WO_HD_DT_TR(json_table_WK) {
