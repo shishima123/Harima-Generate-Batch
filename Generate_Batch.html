@@ -142,8 +142,16 @@
             case "WO_Line_Blank":
               var output1 = Start_To_SubStrb_WO_Line_Blank(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var output2 = SubStrb_To_Insert_WK_WO_Line_Blank(json_table_WK);
-              var output3 = Insert_WK_To_Insert_T_REL_WO_Line_Blank(json_table_WK ,namePhysicTableWK);
+              var output3 = Insert_WK_To_Insert_T_REL_WO_Line_Blank(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_WO_Line_Blank(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+              var output = output1 + output2 + output3 + insertT_RELToEnd;
+              break;
+
+            case "WO_If_Not_19_Items":
+              var output1 = Start_To_Compare_WO_If_Not_19_Items(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var output2 = SubStrb_To_Insert_WK_WO_If_Not_19_Items(json_table_WK);
+              var output3 = Insert_WK_To_Insert_T_REL_WO_If_Not_19_Items(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_WO_If_Not_19_Items(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
               var output = output1 + output2 + output3 + insertT_RELToEnd;
               break;
             default:
@@ -220,10 +228,6 @@
             <input type="text" class="form-control" id="nameJapanOfPkg">
           </div>
         </form>
-        <!-- <div class="form-group">
-          <label class="font-weight-bold">Điều Kiện Where Đặc Biệt</label>
-          <textarea class="form-control" rows="2" cols="8" id="whereExtend"></textarea>
-        </div> -->
         <div class="form-group">
           <label for="typeBatch" class="font-weight-bold">Type Batch</label>
           <select class="form-control" id="typeBatch">
@@ -231,6 +235,7 @@
             <option value="WO_HD_DT_TR">WO_HD_DT_TR</option>
             <option value="WO_HD_DT">WO_HD_DT</option>
             <option value="WO_19_Items">WO_19_Items</option>
+            <option value="WO_If_Not_19_Items">WO_If_Not_19_Items</option>
             <option value="WO_Line_Blank">WO_Line_Blank</option>
             <option value="BO_L_B_D">BO_L_B_D</option>
             <option value="BO_A_B_C_D_E">BO_A_B_C_D_E</option>
@@ -309,6 +314,7 @@
     <script src="./BO/BO_B_D.js"></script>
     <script src="./WO/WO_19_Items.js"></script>
     <script src="./WO/WO_Line_Blank.js"></script>
+    <script src="./WO/WO_If_Not_19_Items.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
       crossorigin="anonymous"></script>

@@ -11,7 +11,7 @@ function Start_To_Compare_WO_19_Items(namePKG, nameJapanOfPkg, namePhysicTableT_
   msgERRCD = namePKG.slice(2, 5);
 
   var startToCompare =
-    `CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
+`CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
 /***************************************************************************************************
  * 名称  ： ${nameJapanOfPkg}（パッケージ定義）                                                      *
  * 作成日： ${dateNow}                                                                                     *
@@ -38,7 +38,6 @@ END PKG_${namePKG};
 /
 
 CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
-
 /***************************************************************************************************
  * 名称  ： ${nameJapanOfPkg}（パッケージ本体）                                                      *
  * 作成日： ${dateNow}                                                                                 *
@@ -55,7 +54,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
     ,IN_EIGYO_CD            IN  ${namePhysicTableT_REL}.EIGYO_CD%TYPE             -- 営業所コード
     ,IN_JYUSHIN_USER_CD     IN  ${namePhysicTableT_REL}.JYUSHIN_USER_CD%TYPE      -- 営業所コード
     ,IN_JSON_DATA           IN  CLOB
-    ,IN_SHUHAISHIN_SEQ      IN  ${namePhysicTableT_REL}SHUHAISHIN_SEQ%TYPE       -- 営業所コード
+    ,IN_SHUHAISHIN_SEQ      IN  ${namePhysicTableT_REL}.SHUHAISHIN_SEQ%TYPE       -- 営業所コード
 
     ,OUT_DATA_KENSU         OUT NUMBER
     ,OUT_DENPYO_KENSU       OUT NUMBER
@@ -70,7 +69,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
     /* 変数 ---------------------------------------------------------------------*/
     WK_COL                   NUMBER          := 0;                                  -- 列の数
     WK_DATA_ROW              VARCHAR2(32000) := '';                                 -- 行データ
-    WK_REC                   WK_E_SHR_ACOPKOKUB%ROWTYPE;                            -- 記録データ
+    WK_REC                   ${namePhysicTableWK}%ROWTYPE;                            -- 記録データ
     WK_COUNT                 NUMBER          := 0;
     WK_SHUHAISHIN1_CD        ${namePhysicTableT_REL}.SHUHAISHIN1_CD%TYPE;                          -- 集配信一次店CD
     WK_SHUHAISHIN2_CD        ${namePhysicTableT_REL}.SHUHAISHIN2_CD%TYPE;                          -- 集配信二次店CD
@@ -375,7 +374,7 @@ function Insert_T_REL_To_End_WO_19_Items(parse_json_mapping, json_table_T_REL, n
       ,SYSTIMESTAMP(3)
       ,IN_JYUSHIN_USER_CD
       ,C_PGID
-    FROM WK_E_SHR_ACOPKOKUB
+    FROM ${namePhysicTableWK}
     WHERE CO_CD          = IN_CO_CD
       AND EIGYO_CD       = IN_EIGYO_CD
       AND SHUHAISHIN_SEQ = IN_SHUHAISHIN_SEQ
