@@ -11,7 +11,7 @@ function Start_To_Compare_WO_Common(namePKG, nameJapanOfPkg, namePhysicTableT_RE
   msgERRCD = namePKG.slice(2, 5);
 
   var startToCompare =
-    `CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
+`CREATE OR REPLACE PACKAGE PKG_${namePKG} AS
 /***************************************************************************************************
  * 名称  ： ${nameJapanOfPkg}（パッケージ定義）                                                       *
  * 作成日： ${dateNow}                                                                               *
