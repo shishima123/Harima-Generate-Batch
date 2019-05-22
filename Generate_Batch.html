@@ -176,8 +176,16 @@
             case "WO_50_51":
               var output1 = Start_To_Declare_WO_50_51(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
               var output2 = Declare_To_SubStrb_WO_50_51(json_table_WK);
-              var output3 = SubStrb_To_Insert_T_REL_WO_50_51(json_table_WK ,namePhysicTableWK);
+              var output3 = SubStrb_To_Insert_T_REL_WO_50_51(json_table_WK, namePhysicTableWK);
               var insertT_RELToEnd = Insert_T_REL_To_End_WO_50_51(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
+              var output = output1 + output2 + output3 + insertT_RELToEnd;
+              break;
+
+            case "WO_70_10_11":
+              var output1 = Start_To_SubStrb_WO_70_10_11(namePKG, nameJapanOfPkg, namePhysicTableT_REL, namePhysicTableWK);
+              var output2 = SubStrb_To_Tag_70_WO_70_10_11(json_table_WK, namePhysicTableWK);
+              var output3 = Tag70_To_Tag_11_WO_70_10_11(json_table_WK, namePhysicTableWK);
+              var insertT_RELToEnd = Insert_T_REL_To_End_WO_70_10_11(parse_json_mapping, json_table_T_REL, namePhysicTableT_REL, namePhysicTableWK, namePKG);
               var output = output1 + output2 + output3 + insertT_RELToEnd;
               break;
             default:
@@ -217,16 +225,18 @@
 <body style="background-color: #EEEEEE;">
   <div class="container mt-3">
     <div class="row">
-      <div class="col-2">
-        <form>
-          <div class="form-group">
-            <label for="namePKG" class="font-weight-bold">Tên Package</label>
-            <input type="text" class="form-control" id="namePKG">
-          </div>
-          <div class="form-group">
-            <label for="nameJapanOfPkg" class="font-weight-bold">Tên Package(Japan)</label>
-            <input type="text" class="form-control" id="nameJapanOfPkg">
-          </div>
+      <div class="col-2 p-0">
+        <div class="shadow p-2 bg-white rounded" style="
+    border: 1px solid #ced4da;"">
+          <form>
+            <div class=" form-group mt-2">
+          <label for="namePKG" class="font-weight-bold">Tên Package</label>
+          <input type="text" class="form-control" id="namePKG">
+        </div>
+        <div class="form-group">
+          <label for="nameJapanOfPkg" class="font-weight-bold">Tên Package(Japan)</label>
+          <input type="text" class="form-control" id="nameJapanOfPkg">
+        </div>
         </form>
         <div class="form-group">
           <label for="typeBatch" class="font-weight-bold">Type Batch</label>
@@ -238,6 +248,7 @@
             <option value="WO_If_Not_19_Items">WO_If_Not_19_Items</option>
             <option value="WO_Line_Blank">WO_Line_Blank</option>
             <option value="WO_50_51">WO_50_51</option>
+            <option value="WO_70_10_11">WO_70_10_11</option>
             <option value="BO_L_B_D">BO_L_B_D</option>
             <option value="BO_A_B_C_D_E">BO_A_B_C_D_E</option>
             <option value="BO_A_B_D_E">BO_A_B_D_E</option>
@@ -246,40 +257,44 @@
             <option value="BO_19_Items">BO_19_Items</option>
           </select>
           <div class="form-check mt-3">
-            <input class="form-check-input" type="checkbox" value="" id="chkbox" style="width:20px;height:20px;cursor: pointer;">
-            <label class="form-check-label text-center" for="chkbox" style="cursor: pointer;">
+            <input class="form-check-input" type="checkbox" value="" id="chkbox"
+              style="width:20px;height:20px;cursor: pointer;">
+            <label class="form-check-label text-center font-weight-bold" for="chkbox" style="cursor: pointer;">
               Chỉ tạo code File mapping
             </label>
           </div>
         </div>
+      </div>
+      <div>
         <div class="form-group">
           <form enctype="multipart/form-data" class="mt-5 text-center">
             <input id="upload" type="file" class="inputfile" />
             <label for="upload">
-              <p class="m-0 h-100 d-flex align-items-center justify-content-center">Choose a file</p>
+              <p class="m-0 h-100 d-flex align-items-center justify-content-center shadow">Choose a file</p>
             </label>
           </form>
         </div>
 
         <div class="form-group mt-5 d-flex justify-content-center">
-          <button type="button" class="btn btn-success font-weight-bold" data-toggle="modal"
-            data-target="#exampleModalScrollable" style="width: 140px;height: 40px;">
+          <button type="button" class="btn btn-success font-weight-bold shadow" data-toggle="modal"
+            data-target="#document" style="width: 140px;height: 40px;">
             Document
           </button>
         </div>
       </div>
-      <div class=" col-10">
-        <textarea class="form-control" rows="33" cols="120" id="xlx_json"></textarea>
-      </div>
+
+    </div>
+    <div class=" col-10">
+      <textarea class="form-control shadow" rows="33" cols="120" id="xlx_json"></textarea>
     </div>
   </div>
+  </div>
 
-  <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal fade" id="document" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalScrollableTitle">Document</h5>
+          <h5 class="modal-title">Document</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

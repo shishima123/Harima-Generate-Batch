@@ -12,3 +12,4 @@ document.write('<script src="./WO/WO_19_Items.js"></script>');
 document.write('<script src="./WO/WO_Line_Blank.js"></script>');
 document.write('<script src="./WO/WO_If_Not_19_Items.js"></script>');
 document.write('<script src="./WO/WO_50_51.js"></script>');
+document.write('<script src="./WO/WO_10_11.js"></script>');
