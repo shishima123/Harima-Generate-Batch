@@ -1,0 +1,25 @@
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile+label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: #1976d2;
+    display: inline-block;
+    cursor: pointer;
+    width: 140px;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.inputfile:hover+label,
+.inputfile+label:hover {
+    background-color: #c62828;
+}

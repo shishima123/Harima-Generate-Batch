@@ -1,0 +1,14 @@
+document.write('<script src="./Gen_Mapping.js"></script>');
+document.write('<script src="./WO/WO_HD_DT_TR.js"></script>');
+document.write('<script src="./WO/WO_HD_DT.js"></script>');
+document.write('<script src="./WO/WO_Common.js"></script>');
+document.write('<script src="./BO/BO_Common.js"></script>');
+document.write('<script src="./BO/BO_L_B_D.js"></script>');
+document.write('<script src="./BO/BO_A_B_C_D_E.js"></script>');
+document.write('<script src="./BO/BO_A_B_D_E.js"></script>');
+document.write('<script src="./BO/BO_Line_Blank.js"></script>');
+document.write('<script src="./BO/BO_B_D.js"></script>');
+document.write('<script src="./WO/WO_19_Items.js"></script>');
+document.write('<script src="./WO/WO_Line_Blank.js"></script>');
+document.write('<script src="./WO/WO_If_Not_19_Items.js"></script>');
+document.write('<script src="./WO/WO_50_51.js"></script>');

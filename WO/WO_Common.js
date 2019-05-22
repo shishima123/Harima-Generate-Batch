@@ -128,7 +128,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
       -- タグを取得して変数にセットする
       WK_TAG := TRIM(SUBSTRB(WK_DATA_ROW, 1, 2));
 
-`
+`;
 
   return startToCompare;
 }
