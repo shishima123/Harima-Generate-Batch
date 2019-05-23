@@ -65,7 +65,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_${namePKG} AS
   ) IS
 
     /* 定数 ---------------------------------------------------------------------*/
-    C_PGID                  CONSTANT VARCHAR2(30) := 'WOREC100';
+    C_PGID                  CONSTANT VARCHAR2(30) := '${namePKG}';
 
     /* 変数 ---------------------------------------------------------------------*/
     WK_DATA_ROW             VARCHAR2(10000) := '';
